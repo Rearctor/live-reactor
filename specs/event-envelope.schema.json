@@ -1,0 +1,160 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Rearctor/live-reactor/specs/event-envelope.schema.json",
+  "title": "Normalized Reaction Event Envelope (draft)",
+  "description": "DRAFT. Canonical shape for a single normalized onchain event relating to a Rearctor reaction. Field names and value domains are under research and are not final. This schema does not describe an implemented system.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "event_id",
+    "event_type",
+    "reaction",
+    "chain_reference",
+    "finality",
+    "payload"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "description": "Draft revision of the envelope format. Not a released version number.",
+      "pattern": "^0[.][0-9]+$"
+    },
+    "event_id": {
+      "type": "string",
+      "description": "Stable identity derived from chain position. Used for consumer-side deduplication and for retraction. Format: block_hash colon log_index.",
+      "pattern": "^0x[0-9a-f]{64}:[0-9]+$"
+    },
+    "event_type": {
+      "type": "string",
+      "description": "Kind of event. Closed set; payload shape depends on this value.",
+      "enum": [
+        "reaction_deployed",
+        "curve_trade",
+        "fee_accrual",
+        "ignition",
+        "pool_trade",
+        "token_transfer"
+      ]
+    },
+    "reaction": {
+      "type": "object",
+      "required": [
+        "reaction_id"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "reaction_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "stage_at_event": {
+          "type": "string",
+          "description": "Lifecycle stage at the time of the event. Enrichment, not raw log data.",
+          "enum": [
+            "spark",
+            "charging",
+            "critical_mass",
+            "ignition",
+            "expansion"
+          ]
+        }
+      }
+    },
+    "chain_reference": {
+      "type": "object",
+      "description": "Where this event occurred. Sufficient for independent verification.",
+      "required": [
+        "block_height",
+        "block_hash",
+        "transaction_hash",
+        "log_index"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "block_height": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "block_hash": {
+          "type": "string",
+          "pattern": "^0x[0-9a-f]{64}$"
+        },
+        "transaction_hash": {
+          "type": "string",
+          "pattern": "^0x[0-9a-f]{64}$"
+        },
+        "log_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "block_timestamp": {
+          "type": "string",
+          "description": "RFC 3339. Convenience only. Block height is authoritative for ordering and windows.",
+          "format": "date-time"
+        }
+      }
+    },
+    "finality": {
+      "type": "object",
+      "description": "Reorg posture. A consumer may reject events below its own confirmation requirement.",
+      "required": [
+        "status",
+        "confirmations"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "description": "The value retracted indicates a previously emitted event whose block was orphaned. Retractions carry the original event_id.",
+          "enum": [
+            "pending",
+            "final",
+            "retracted"
+          ]
+        },
+        "confirmations": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "payload": {
+      "type": "object",
+      "description": "Event-specific fields. Intentionally open in this draft; per-type payload schemas are under research. All amounts are base-unit integers expressed as decimal strings.",
+      "additionalProperties": true
+    },
+    "enrichment": {
+      "type": "object",
+      "description": "Derived context attached at the enrich stage. Facts only, never judgements. Whether enrichment belongs in the envelope at all is under research.",
+      "additionalProperties": false,
+      "properties": {
+        "reserves_after_usdc": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "ignition_threshold_usdc": {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        "distance_to_threshold_usdc": {
+          "type": "string",
+          "description": "Signed decimal string. Negative after the threshold has been crossed.",
+          "pattern": "^-?[0-9]+$"
+        },
+        "pool_reference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "notes": {
+      "type": "string",
+      "description": "Free-text annotation. Not interpreted. Used to mark illustrative events as non-normative.",
+      "maxLength": 2000
+    }
+  }
+}

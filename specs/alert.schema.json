@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Rearctor/live-reactor/specs/alert.schema.json",
+  "title": "Reaction Alert (draft)",
+  "description": "DRAFT. An alert emitted when a declared threshold condition is observed. Field names and value domains are under research and are not final. No thresholds are agreed in this repository; each alert therefore records the threshold that produced it.",
+  "type": "object",
+  "required": ["schema_version", "alert_id", "reaction", "event_type", "threshold", "observed_at", "chain_reference"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "type": "string", "pattern": "^0[.][0-9]+$" },
+    "alert_id": {
+      "type": "string",
+      "description": "Stable identity for deduplication. Derived from reaction, event_type and triggering chain position.",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "reaction": {
+      "type": "object",
+      "required": ["reaction_id"],
+      "additionalProperties": false,
+      "properties": {
+        "reaction_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "stage_at_alert": {
+          "type": "string",
+          "enum": ["spark", "charging", "critical_mass", "ignition", "expansion"]
+        }
+      }
+    },
+    "event_type": {
+      "type": "string",
+      "description": "What was observed. Descriptive only - no alert type may assert a future outcome.",
+      "enum": [
+        "threshold_progress",
+        "ignition_detected",
+        "activity_elevated",
+        "reaction_deployed"
+      ]
+    },
+    "threshold": {
+      "type": "object",
+      "description": "The condition that produced this alert, recorded inline so a historical alert stays interpretable after thresholds change.",
+      "required": ["expression", "status"],
+      "additionalProperties": false,
+      "properties": {
+        "expression": { "type": "string", "maxLength": 500 },
+        "status": {
+          "type": "string",
+          "description": "Every threshold in this repository is unresolved. Other values are reserved and not in use.",
+          "enum": ["unresolved", "provisional", "agreed"]
+        },
+        "observed_value": { "type": "string", "maxLength": 100 },
+        "window_blocks": { "type": ["integer", "null"], "minimum": 1 }
+      }
+    },
+    "observed_at": {
+      "type": "object",
+      "required": ["block_height"],
+      "additionalProperties": false,
+      "properties": {
+        "block_height": { "type": "integer", "minimum": 0 },
+        "block_timestamp": { "type": "string", "format": "date-time" },
+        "confirmations": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "chain_reference": {
+      "type": "object",
+      "description": "The onchain fact behind the alert, so a recipient can verify rather than trust.",
+      "required": ["block_hash", "transaction_hash"],
+      "additionalProperties": false,
+      "properties": {
+        "block_hash": { "type": "string", "pattern": "^0x[0-9a-f]{64}$" },
+        "transaction_hash": { "type": "string", "pattern": "^0x[0-9a-f]{64}$" },
+        "log_index": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "supersedes": {
+      "type": ["string", "null"],
+      "description": "alert_id this alert corrects or retracts, if any. Required for reorg handling."
+    },
+    "limitations": {
+      "type": "string",
+      "description": "Known weaknesses of this observation, carried with the alert rather than documented elsewhere.",
+      "maxLength": 1000
+    }
+  }
+}

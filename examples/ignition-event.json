@@ -1,0 +1,41 @@
+{
+  "schema_version": "0.1",
+  "event_id": "0x38e9b3f782a7c9cef63cffb19fa3f4140928aa9c2f49cc339a466ba00045a26c:12",
+  "event_type": "ignition",
+  "reaction": {
+    "reaction_id": "reaction-0000000000000000000000000000000000000000000000000000000000000001",
+    "stage_at_event": "ignition"
+  },
+  "chain_reference": {
+    "block_height": 4822417,
+    "block_hash": "0x38e9b3f782a7c9cef63cffb19fa3f4140928aa9c2f49cc339a466ba00045a26c",
+    "transaction_hash": "0x0b53f0895eb4d743d9104b595a51036358f041b1c46cee5487feda4b35fbfcd4",
+    "log_index": 12,
+    "block_timestamp": "2026-09-16T18:42:07Z"
+  },
+  "finality": {
+    "status": "final",
+    "confirmations": 128
+  },
+  "payload": {
+    "reserves_at_threshold_usdc": "5042000000",
+    "migrated_supply_tokens": "214000000000000000000000000",
+    "initial_supply_tokens": "1000000000000000000000000000",
+    "migrated_supply_fraction_bps": 2140,
+    "final_curve_price_usdc_per_token": "0.0000235607",
+    "pool_reference": "univ4:0x5c1d0b7e9a34c8f21e0b7d5946a3c018fe72b4d9",
+    "migration_atomic": true,
+    "triggering_trade": {
+      "direction": "buy",
+      "usdc_in": "412700000",
+      "log_index": 11
+    }
+  },
+  "enrichment": {
+    "reserves_after_usdc": "5042000000",
+    "ignition_threshold_usdc": "5042000000",
+    "distance_to_threshold_usdc": "0",
+    "pool_reference": "univ4:0x5c1d0b7e9a34c8f21e0b7d5946a3c018fe72b4d9"
+  },
+  "notes": "ILLUSTRATIVE AND NON-NORMATIVE. Block heights, hashes, timestamps, migrated supply and trade amounts are invented values used to exercise the draft envelope schema. The protocol facts in this example are the 5,042 USDC ignition threshold, the 1,000,000,000 initial supply, and that migration is atomic. Illustrative only. Not protocol defaults or committed parameters."
+}

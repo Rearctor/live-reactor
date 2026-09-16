@@ -57,7 +57,9 @@ Ignition detected.
 New reaction accelerating.
 ```
 
-These are illustrative message forms. No notification system exists.
+These are illustrative message forms. No notification system exists, and the 90%
+figure is a placeholder. Illustrative only. Not protocol defaults or committed
+parameters.
 
 ## Potential ranking inputs
 
@@ -85,6 +87,27 @@ chosen.
   a single atomic transaction?
 - How should discovery present post-ignition reactions, whose market has moved from
   the curve to Uniswap V4?
+
+## Research workspace
+
+Current design work is organized across architecture notes, draft specifications and
+RFCs. Everything below is concept and research: no implementation exists, and no
+ranking or notification logic has been designed.
+
+**Architecture**
+- [Discovery model](docs/discovery-model.md) - candidate surfaces, their definitions and what each leaves unresolved
+- [Event flow](docs/event-flow.md) - onchain event through index, normalize, enrich, stream, alert
+
+**Draft specifications**
+- [Event envelope schema](specs/event-envelope.schema.json) - draft normalized reaction event format
+- [Alert schema](specs/alert.schema.json) - draft alert object
+- [Example: ignition event](examples/ignition-event.json) - an event conforming to the draft envelope schema
+
+**RFCs**
+- [RFC 0001 - Live feed](rfcs/0001-live-feed.md) - delivery semantics, finality and retraction
+
+**Open research**
+- [Ranking inputs](research/ranking-inputs.md) - why ranking must stay transparent and descriptive
 
 ## Links
 
